@@ -1,0 +1,38 @@
+.app {
+  margin-top: 5rem;
+}
+
+.counter {
+  width: 500px;
+  height: 500px;
+  border: 1px dashed teal;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.counter__scoring {
+  display: flex;
+  align-items: center;
+}
+
+.counter__count {
+  color: teal;
+  margin: 0 20px;
+  font-size: 40px;
+}
+
+.counter__button {
+  border: none;
+  background-color: teal;
+  padding: 7px 12px;
+  color: aliceblue;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.counter__button:active {
+  opacity: 0.8;
+}

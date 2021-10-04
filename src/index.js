@@ -1,6 +1,14 @@
 import React from "react";
 import reactDOM from "react-dom";
 
-import App from "./App";
+import Counter from "./Counter";
 
-reactDOM.render(<App />, document.getElementById("root"));
+const Application = () => {
+  return (
+    <main className="app">
+      <Counter max={15} step={5} />
+    </main>
+  );
+};
+
+reactDOM.render(<Application />, document.getElementById("root"));
