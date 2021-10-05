@@ -1,73 +1,60 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 
 import "./style.css";
 
-const getStateFromLocalStorage = () => {
-  const counter = localStorage.getItem("counter");
-  if (counter) return JSON.parse(counter);
-  return { count: 0 };
+const useLocalStorage = (initialState, key) => {
+  const get = () => {
+    const storage = localStorage.getItem(key);
+    if (storage) return Number(storage);
+    return initialState;
+  };
+  const [value, setValue] = useState(get());
+
+  useEffect(() => {
+    localStorage.setItem(key, value);
+  }, [value]);
+
+  return [value, setValue];
 };
 
-class Counter extends React.Component {
-  constructor(props) {
-    super(props);
+const Counter = ({ max, step }) => {
+  const [count, setCount] = useLocalStorage(0, "counter");
+  const countRef = useRef();
 
-    this.state = getStateFromLocalStorage();
+  let message;
+  if (countRef.current < count) message = "Higher";
+  if (countRef.current > count) message = "Lower";
+  countRef.current = count;
 
-    this.increment = this.increment.bind(this);
-    this.decrement = this.decrement.bind(this);
-    this.reset = this.reset.bind(this);
-    this.updateDocumentTitle = this.updateDocumentTitle.bind(this);
-  }
+  const increment = () => setCount(count + 1);
+  const decrement = () => setCount(count - 1);
+  const reset = () => setCount(0);
 
-  updateDocumentTitle() {
-    document.title = `Steve's counter is ${this.state.count}`;
-  }
+  useEffect(() => {
+    document.title = `Steve's counter is ${count}`;
+  }, [count]);
 
-  increment() {
-    this.setState(
-      (state, props) => {
-        const { max, step } = props;
-        if (state.count >= max) return;
-        return { count: state.count + step };
-      },
-      () => {
-        localStorage.setItem("counter", JSON.stringify(this.state));
-        this.updateDocumentTitle();
-      }
-    );
-  }
-
-  decrement() {
-    this.setState({ count: this.state.count - 1 }, this.updateDocumentTitle);
-  }
-
-  reset() {
-    this.setState({ count: 0 }, this.updateDocumentTitle);
-  }
-
-  render() {
-    return (
-      <div className="counter">
-        <div className="counter__scoring">
-          <button className="counter__button" onClick={this.decrement}>
-            Decrement
-          </button>
-          <span className="counter__count">{this.state.count}</span>
-          <button className="counter__button" onClick={this.increment}>
-            Increment
-          </button>
-        </div>
-        <div className="counter__reset">
-          <button className="counter__button" onClick={this.reset}>
-            Reset
-          </button>
-        </div>
+  return (
+    <div className="counter">
+      <p>{message}</p>
+      <div className="counter__scoring">
+        <button className="counter__button" onClick={decrement}>
+          Decrement
+        </button>
+        <span className="counter__count">{count}</span>
+        <button className="counter__button" onClick={increment}>
+          Increment
+        </button>
       </div>
-    );
-  }
-}
+      <div className="counter__reset">
+        <button className="counter__button" onClick={reset}>
+          Reset
+        </button>
+      </div>
+    </div>
+  );
+};
 
 Counter.propTypes = {
   max: PropTypes.number,
